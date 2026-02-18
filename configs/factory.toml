@@ -1,0 +1,14 @@
+[provider]
+name = "openai"
+default_model = "gpt-4.1"
+
+[provider.role_models]
+analyst = "gpt-4.1"
+planner = "gpt-4.1-mini"
+architect = "gpt-4.1"
+implementer = "gpt-4.1"
+tester = "gpt-4.1-mini"
+security = "gpt-4.1"
+
+[storage]
+data_dir = ".factory"
