@@ -1,22 +1,22 @@
 # Architecture (Phase 0)
 
 ## Purpose
-Phase 0 provides the baseline scaffolding for an AI software factory CLI:
+Phase 0 provides the baseline scaffolding for a Starray CLI:
 - load structured configuration,
 - start a CLI process,
 - persist chat sessions,
 - log each turn.
 
 ## Initial Components
-- `factory.cli`: user entry point (`status`, `chat`).
-- `factory.config`: loads and validates app configuration.
-- `factory.session`: session creation, append-turn, save/load JSON state.
-- `factory.logging_utils`: per-session file logger.
+- `starray.cli`: user entry point (`status`, `chat`).
+- `starray.config`: loads and validates app configuration.
+- `starray.session`: session creation, append-turn, save/load JSON state.
+- `starray.logging_utils`: per-session file logger.
 
 ## Data Layout
-- `configs/factory.toml`: provider and role model mapping.
-- `.factory/sessions/*.json`: serialized session transcripts.
-- `.factory/logs/*.log`: per-session operational logs.
+- `configs/starray.toml`: provider and role model mapping.
+- `.starray/sessions/*.json`: serialized session transcripts.
+- `.starray/logs/*.log`: per-session operational logs.
 
 ## Constraints in Phase 0
 - Only one visible persona (Analyst).

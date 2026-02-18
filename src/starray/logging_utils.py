@@ -8,7 +8,7 @@ def build_session_logger(log_dir: Path, session_id: str) -> logging.Logger:
     log_dir.mkdir(parents=True, exist_ok=True)
     log_path = log_dir / f"{session_id}.log"
 
-    logger = logging.getLogger(f"factory.session.{session_id}")
+    logger = logging.getLogger(f"starray.session.{session_id}")
     logger.setLevel(logging.INFO)
     logger.propagate = False
 

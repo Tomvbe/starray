@@ -6,6 +6,7 @@ from pathlib import Path
 import sys
 from typing import Optional
 
+from . import __version__
 from .config import AppConfig, ConfigError, load_config
 from .logging_utils import build_session_logger
 from .session import SessionState, SessionError, load_session
@@ -47,7 +48,7 @@ def cmd_status(config_path: Path) -> int:
         print(ui.c(str(exc), Ui.RED))
         return 1
 
-    print(ui.c("Factory status: ready", Ui.BOLD, Ui.GREEN))
+    print(ui.c("Starray status: ready", Ui.BOLD, Ui.GREEN))
     print(f"{ui.c('Provider:', Ui.CYAN)} {cfg.provider}")
     print(f"{ui.c('Default model:', Ui.CYAN)} {cfg.default_model}")
     print(f"{ui.c('Data dir:', Ui.CYAN)} {cfg.data_dir}")
@@ -78,9 +79,9 @@ def _handle_turn(
 
 
 def _print_intro(cfg: AppConfig, session_id: str) -> None:
-    print(ui.c("╔══════════════════════════════════════════════════════╗", Ui.BLUE))
-    print(ui.c("║               AI Software Factory CLI               ║", Ui.BOLD, Ui.BLUE))
-    print(ui.c("╚══════════════════════════════════════════════════════╝", Ui.BLUE))
+    print(ui.c("╔═════════════════════════════════════════════════════╗", Ui.BLUE))
+    print(ui.c("║                     StarRay CLI                     ║", Ui.BOLD, Ui.BLUE))
+    print(ui.c("╚═════════════════════════════════════════════════════╝", Ui.BLUE))
     print(
         f"{ui.c('Analyst', Ui.BOLD, Ui.MAGENTA)} is active. Hidden specialist agents are offline in Phase 0."
     )
@@ -151,13 +152,14 @@ def cmd_chat(config_path: Path, message: Optional[str], session_id: Optional[str
         print()
 
     print(ui.c(f"Session saved: {state.session_id}", Ui.GREEN))
-    print(ui.c(f"Resume with: factory --session-id {state.session_id}", Ui.YELLOW))
+    print(ui.c(f"Resume with: starray --session-id {state.session_id}", Ui.YELLOW))
     return 0
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="factory", description="AI Software Factory CLI")
-    parser.add_argument("--config", "-c", default="configs/factory.toml")
+    parser = argparse.ArgumentParser(prog="starray", description="Starray CLI")
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
+    parser.add_argument("--config", "-c", default="configs/starray.toml")
     parser.add_argument("--session-id")
     subparsers = parser.add_subparsers(dest="command")
 
@@ -176,7 +178,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
-    config_value = args.config or "configs/factory.toml"
+    config_value = args.config or "configs/starray.toml"
     config_path = Path(config_value)
 
     if args.command == "status":

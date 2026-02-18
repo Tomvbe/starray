@@ -1,9 +1,9 @@
-# AI Software Factory Summary
+# Starray Summary
 
 Date: 2026-02-17
 
 ## Goal
-Build a CLI-first "AI software factory" where the user talks to a single visible **Analyst** agent, while hidden specialist agents (planning, architecture, implementation, testing, security, etc.) coordinate behind the scenes.
+Build a CLI-first "Starray" where the user talks to a single visible **Analyst** agent, while hidden specialist agents (planning, architecture, implementation, testing, security, etc.) coordinate behind the scenes.
 
 ## Core Product Direction
 - Do **not** fork Codex as the primary base.
@@ -53,7 +53,7 @@ Build a CLI-first "AI software factory" where the user talks to a single visible
 
 ## Build vs Buy Guidance
 - If solo/small team optimizing for speed: Codex/Claude Agent alone is often enough.
-- If team/org needs repeatable, auditable, policy-driven delivery + model flexibility: custom factory is worth it.
+- If team/org needs repeatable, auditable, policy-driven delivery + model flexibility: custom Starray is worth it.
 
 ## Suggested Next Step
 Scaffold a starter repo with:

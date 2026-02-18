@@ -3,18 +3,37 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ai-software-factory"
+name = "starray"
 version = "0.1.0"
-description = "CLI-first AI software factory"
+description = "CLI-first Starray"
 readme = "README.md"
 requires-python = ">=3.13,<3.14"
 dependencies = []
+license = {text = "Apache License 2.0"}
+authors = [
+  {name = "Tom Van Besien"},
+]
+keywords = ["ai", "cli", "multi-agent", "orchestration", "langgraph"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.13",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Build Tools",
+  "License :: OSI Approved :: Apache Software License",
+]
 
 [project.scripts]
-factory = "factory.cli:main"
+starray = "starray.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/Tomvbe/sarray"
+Repository = "https://github.com/Tomvbe/sarray"
+Issues = "https://github.com/Tomvbe/sarray/issues"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
+license-files = ["LICENSE"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

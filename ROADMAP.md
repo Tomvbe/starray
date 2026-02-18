@@ -1,11 +1,11 @@
-# AI Software Factory Roadmap
+# Starray Roadmap
 
 Date: 2026-02-18
 Owner: Tom
 Status: Draft v1
 
 ## Objective
-Build a CLI-first AI software factory where the user interacts only with an Analyst persona while hidden specialist agents coordinate planning, architecture, implementation, testing, and security.
+Build a CLI-first Starray where the user interacts only with an Analyst persona while hidden specialist agents coordinate planning, architecture, implementation, testing, and security.
 
 ## Success Metrics (MVP)
 - End-to-end feature delivery from prompts only in a real repository. The agents should ask regular feedback to the user. 
@@ -36,7 +36,7 @@ Acceptance Criteria:
 Goal: provide a usable single-agent conversation loop with pluggable models.
 
 Scope:
-1. Implement `factory chat` command (Typer).
+1. Implement `starray chat` command (Typer).
 2. Build `ModelProvider` interface (chat + structured output).
 3. Add LiteLLM-based adapters for OpenAI/Anthropic/Gemini.
 4. Add per-role model selection and fallback order.

@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from src.factory.session import SessionState, load_session
+from src.starray.session import SessionState, load_session
 
 
 class TestSession(unittest.TestCase):

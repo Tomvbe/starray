@@ -11,4 +11,4 @@ tester = "gpt-4.1-mini"
 security = "gpt-4.1"
 
 [storage]
-data_dir = ".factory"
+data_dir = ".starray"

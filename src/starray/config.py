@@ -33,7 +33,7 @@ def load_config(config_path: Path) -> AppConfig:
     default_model = provider_cfg.get("default_model", "gpt-4.1")
     role_models = dict(provider_cfg.get("role_models", {}))
 
-    data_dir_raw = storage_cfg.get("data_dir", ".factory")
+    data_dir_raw = storage_cfg.get("data_dir", ".starray")
     data_dir = Path(data_dir_raw)
 
     return AppConfig(
