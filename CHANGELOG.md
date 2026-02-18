@@ -14,7 +14,7 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 ### Fixed
 - Placeholder for upcoming changes.
 
-## [0.1.0] - 2026-02-18
+## [0.1.1] - 2026-02-18
 ### Added
 - Phase 0 CLI scaffold (`status`, `chat`, session persistence, logs).
 - Config loader and baseline project structure.
