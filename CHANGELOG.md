@@ -6,13 +6,21 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 ### Added
-- Placeholder for upcoming changes.
+- Added `ModelProvider` abstraction with LiteLLM adapters and deterministic local fallback provider.
+- Added `AnalystRuntime` with provider/model fallback routing and provider summary output.
+- Added `starray provider` CLI command and `/provider` interactive chat command.
+- Added provider optional dependency extra (`starray-cli[providers]`) for LiteLLM support.
+- Added `tests/test_analyst.py` coverage for fallback behavior and route summaries.
 
 ### Changed
-- Placeholder for upcoming changes.
+- Extended config schema with provider fallbacks, role fallback models, timeout, and temperature settings.
+- Updated chat responses to call the provider runtime and log provider/model fallback metadata.
+- Updated default and checked-in config templates with Phase 1 provider routing fields.
+- Updated docs to describe provider routing, LiteLLM setup, and `/provider` command usage.
+- Updated CLI intro text to reflect Phase 1 provider abstraction readiness.
 
 ### Fixed
-- Placeholder for upcoming changes.
+- Ensured chat remains functional without remote SDKs by automatically falling back to local provider behavior.
 
 ## [0.1.2] - 2026-02-18
 ### Added

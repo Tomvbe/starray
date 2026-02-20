@@ -7,6 +7,7 @@ import sys
 from typing import Optional
 
 from . import __version__
+from .analyst import AnalystRuntime
 from .config import AppConfig, ConfigError, load_config
 from .logging_utils import build_session_logger
 from .session import SessionState, SessionError, load_session
@@ -89,7 +90,10 @@ def _default_config_text() -> str:
     state_dir = _user_state_path().as_posix()
     return f"""[provider]
 name = "openai"
+fallbacks = ["anthropic", "gemini", "local"]
 default_model = "gpt-4.1"
+temperature = 0.2
+request_timeout_seconds = 30
 
 [provider.role_models]
 analyst = "gpt-4.1"
@@ -98,6 +102,9 @@ architect = "gpt-4.1"
 implementer = "gpt-4.1"
 tester = "gpt-4.1-mini"
 security = "gpt-4.1"
+
+[provider.role_fallback_models]
+analyst = ["gpt-4.1-mini"]
 
 [storage]
 data_dir = "{state_dir}"
@@ -120,6 +127,7 @@ def cmd_status(config_path: Path) -> int:
     print(ui.c("Starray status: ready", Ui.BOLD, Ui.GREEN))
     print(f"{ui.c('Config:', Ui.CYAN)} {config_path}")
     print(f"{ui.c('Provider:', Ui.CYAN)} {cfg.provider}")
+    print(f"{ui.c('Provider fallbacks:', Ui.CYAN)} {', '.join(cfg.provider_fallbacks) or '(none)'}")
     print(f"{ui.c('Default model:', Ui.CYAN)} {cfg.default_model}")
     print(f"{ui.c('Data dir:', Ui.CYAN)} {cfg.data_dir}")
     return 0
@@ -127,6 +135,7 @@ def cmd_status(config_path: Path) -> int:
 
 def _handle_turn(
     user_text: str,
+    analyst_runtime: AnalystRuntime,
     state: SessionState,
     sessions_dir: Path,
     logger,
@@ -135,15 +144,26 @@ def _handle_turn(
     if not user_text:
         return
 
-    analyst_reply = "Analyst: received. Phase 0 scaffold is active; orchestration comes next."
+    analyst_response = analyst_runtime.respond(user_text)
     state.add_turn("user", user_text)
-    state.add_turn("analyst", analyst_reply)
+    state.add_turn("analyst", analyst_response.content)
     logger.info("user=%s", user_text)
-    logger.info("analyst=%s", analyst_reply)
+    logger.info(
+        "analyst provider=%s model=%s fallback=%s",
+        analyst_response.provider,
+        analyst_response.model,
+        analyst_response.fallback_used,
+    )
+    logger.info("analyst=%s", analyst_response.content)
     state.save(sessions_dir)
+    provider_line = (
+        f"{ui.c('│', Ui.MAGENTA)} "
+        f"{ui.c('[provider]', Ui.DIM)} {analyst_response.provider}/{analyst_response.model}"
+    )
     print(
         f"{ui.c('┌─ Analyst', Ui.BOLD, Ui.MAGENTA)}\n"
-        f"{ui.c('│', Ui.MAGENTA)} {analyst_reply}\n"
+        f"{provider_line}\n"
+        f"{ui.c('│', Ui.MAGENTA)} {analyst_response.content}\n"
         f"{ui.c('└────────', Ui.MAGENTA)}"
     )
 
@@ -153,7 +173,7 @@ def _print_intro(cfg: AppConfig, session_id: str) -> None:
     print(ui.c("║                     StarRay CLI                     ║", Ui.BOLD, Ui.BLUE))
     print(ui.c("╚═════════════════════════════════════════════════════╝", Ui.BLUE))
     print(
-        f"{ui.c('Analyst', Ui.BOLD, Ui.MAGENTA)} is active. Hidden specialist agents are offline in Phase 0."
+        f"{ui.c('Analyst', Ui.BOLD, Ui.MAGENTA)} is active. Provider abstraction is enabled; specialist graph comes in Phase 2."
     )
     print(
         f"{ui.c('Provider:', Ui.CYAN)} {cfg.provider}   "
@@ -162,10 +182,23 @@ def _print_intro(cfg: AppConfig, session_id: str) -> None:
     )
     print(
         ui.c(
-            "Commands: /help, /session, /status, exit",
+            "Commands: /help, /provider, /session, /status, exit",
             Ui.DIM,
         )
     )
+
+
+def cmd_provider(config_path: Path) -> int:
+    try:
+        cfg = load_config(config_path)
+    except ConfigError as exc:
+        return _print_config_error(exc, config_path)
+
+    analyst_runtime = AnalystRuntime(cfg)
+    print(ui.c("Provider routing", Ui.BOLD, Ui.GREEN))
+    print(f"{ui.c('Config:', Ui.CYAN)} {config_path}")
+    print(analyst_runtime.provider_summary())
+    return 0
 
 
 def cmd_chat(config_path: Path, message: Optional[str], session_id: Optional[str]) -> int:
@@ -175,6 +208,7 @@ def cmd_chat(config_path: Path, message: Optional[str], session_id: Optional[str
         return _print_config_error(exc, config_path)
 
     sessions_dir, logs_dir = _resolve_storage_paths(cfg)
+    analyst_runtime = AnalystRuntime(cfg)
 
     try:
         if session_id:
@@ -191,7 +225,7 @@ def cmd_chat(config_path: Path, message: Optional[str], session_id: Optional[str
     _print_intro(cfg, state.session_id)
 
     if message is not None:
-        _handle_turn(message, state, sessions_dir, logger)
+        _handle_turn(message, analyst_runtime, state, sessions_dir, logger)
         print(ui.c(f"Session saved: {state.session_id}", Ui.GREEN))
         return 0
 
@@ -204,7 +238,10 @@ def cmd_chat(config_path: Path, message: Optional[str], session_id: Optional[str
                 state.save(sessions_dir)
                 break
             if user_text.strip() == "/help":
-                print(ui.c("Commands: /help, /session, /status, exit", Ui.DIM))
+                print(ui.c("Commands: /help, /provider, /session, /status, exit", Ui.DIM))
+                continue
+            if user_text.strip() == "/provider":
+                print(analyst_runtime.provider_summary())
                 continue
             if user_text.strip() == "/session":
                 print(ui.c(f"Current session: {state.session_id}", Ui.YELLOW))
@@ -215,7 +252,7 @@ def cmd_chat(config_path: Path, message: Optional[str], session_id: Optional[str
                     f"{ui.c('Model:', Ui.CYAN)} {cfg.default_model}"
                 )
                 continue
-            _handle_turn(user_text, state, sessions_dir, logger)
+            _handle_turn(user_text, analyst_runtime, state, sessions_dir, logger)
     except (KeyboardInterrupt, EOFError):
         state.save(sessions_dir)
         print()
@@ -249,6 +286,9 @@ def build_parser() -> argparse.ArgumentParser:
     status_parser = subparsers.add_parser("status", help="Show baseline app status")
     status_parser.add_argument("--config", "-c", dest="sub_config")
 
+    provider_parser = subparsers.add_parser("provider", help="Show provider/model routing")
+    provider_parser.add_argument("--config", "-c", dest="sub_config")
+
     chat_parser = subparsers.add_parser("chat", help="Run baseline Analyst chat loop")
     chat_parser.add_argument("--config", "-c", dest="sub_config")
     chat_parser.add_argument("--message", "-m")
@@ -273,6 +313,8 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     if args.command == "status":
         return cmd_status(config_path)
+    if args.command == "provider":
+        return cmd_provider(config_path)
     if args.command == "chat":
         session_id = getattr(args, "sub_session_id", None) or args.session_id
         return cmd_chat(config_path, args.message, session_id)

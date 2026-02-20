@@ -10,6 +10,9 @@ class TestConfig(unittest.TestCase):
         self.assertEqual(cfg.provider, "openai")
         self.assertTrue(cfg.default_model)
         self.assertIn("analyst", cfg.role_models)
+        self.assertIn("local", cfg.provider_fallbacks)
+        self.assertIn("analyst", cfg.role_fallback_models)
+        self.assertGreater(cfg.request_timeout_seconds, 0)
 
 
 if __name__ == "__main__":

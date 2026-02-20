@@ -1,6 +1,9 @@
 [provider]
 name = "openai"
+fallbacks = ["anthropic", "gemini", "local"]
 default_model = "gpt-4.1"
+temperature = 0.2
+request_timeout_seconds = 30
 
 [provider.role_models]
 analyst = "gpt-4.1"
@@ -9,6 +12,9 @@ architect = "gpt-4.1"
 implementer = "gpt-4.1"
 tester = "gpt-4.1-mini"
 security = "gpt-4.1"
+
+[provider.role_fallback_models]
+analyst = ["gpt-4.1-mini"]
 
 [storage]
 data_dir = ".starray"

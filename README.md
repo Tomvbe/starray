@@ -10,6 +10,12 @@ starray --version
 starray init
 ```
 
+To enable remote provider calls through LiteLLM:
+
+```bash
+pipx inject starray-cli "starray-cli[providers]"
+```
+
 If you prefer source install:
 
 ```bash
@@ -48,6 +54,7 @@ If no config exists, run `starray init`.
 
 ## Interactive Commands
 - `/status`: show active provider/model.
+- `/provider`: show provider/model fallback routing.
 - `/session`: show current session id.
 - `/help`: show available chat commands.
 - `exit` or `quit`: save and exit.

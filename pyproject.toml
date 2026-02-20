@@ -26,6 +26,11 @@ classifiers = [
 [project.scripts]
 starray = "starray.cli:main"
 
+[project.optional-dependencies]
+providers = [
+  "litellm>=1.74.0",
+]
+
 [project.urls]
 Homepage = "https://github.com/Tomvbe/sarray"
 Repository = "https://github.com/Tomvbe/sarray"

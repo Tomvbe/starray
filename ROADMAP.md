@@ -1,4 +1,4 @@
-# Starray Roadmap
+# StarRay Roadmap
 
 Date: 2026-02-18
 Owner: Tom
@@ -36,7 +36,7 @@ Acceptance Criteria:
 Goal: provide a usable single-agent conversation loop with pluggable models.
 
 Scope:
-1. Implement `starray chat` command (Typer).
+1. Implement Typer for `starray` chat command.
 2. Build `ModelProvider` interface (chat + structured output).
 3. Add LiteLLM-based adapters for OpenAI/Anthropic/Gemini.
 4. Add per-role model selection and fallback order.
@@ -148,8 +148,3 @@ Acceptance Criteria:
 4. State explosion in long sessions.
 - Mitigation: summarization checkpoints + bounded memory windows.
 
-## Immediate Next Actions
-1. Scaffold baseline project structure.
-2. Implement config loader and provider abstraction interfaces.
-3. Build Analyst-only CLI loop.
-4. Add first integration test for a mock provider.

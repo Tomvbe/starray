@@ -12,6 +12,8 @@ Phase 0 provides the baseline scaffolding for a Starray CLI:
 - `starray.config`: loads and validates app configuration.
 - `starray.session`: session creation, append-turn, save/load JSON state.
 - `starray.logging_utils`: per-session file logger.
+- `starray.providers`: provider abstraction (`ModelProvider`) + LiteLLM/local adapters.
+- `starray.analyst`: Analyst runtime with provider/model fallback routing.
 
 ## Data Layout
 - `configs/starray.toml`: provider and role model mapping.
